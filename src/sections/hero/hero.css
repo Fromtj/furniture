@@ -1,0 +1,142 @@
+.hero {
+  position: relative;
+  padding-bottom: var(--section-gap);
+  overflow: hidden;
+}
+
+.hero__accent {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  z-index: 1;
+  width: 16px;
+  height: 122px;
+  background: var(--color-primary);
+}
+
+.hero__grid {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 58%;
+  height: 360px;
+  background-image:
+    linear-gradient(to right, #f1f1f3 1px, transparent 1px),
+    linear-gradient(to bottom, #f1f1f3 1px, transparent 1px);
+  background-size: 120px 120px;
+  pointer-events: none;
+}
+
+.hero__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: center;
+  gap: 48px;
+}
+
+.hero__content {
+  padding: 40px 0;
+}
+
+.hero__eyebrow {
+  margin-bottom: 24px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.hero__title {
+  max-width: 460px;
+  font-size: clamp(30px, 3.4vw, 40px);
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--color-dark);
+}
+
+.hero__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-top: 40px;
+}
+
+.hero__video {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.hero__video-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  color: var(--color-dark);
+  transition: transform 0.2s ease;
+}
+
+.hero__video:hover .hero__video-icon {
+  transform: scale(1.08);
+}
+
+.hero__visual {
+  position: relative;
+}
+
+.hero__media {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 420px;
+  aspect-ratio: 4 / 5;
+  max-height: 540px;
+}
+
+.hero__backdrop {
+  position: absolute;
+  right: -28px;
+  bottom: -40px;
+  width: 78%;
+  height: 40%;
+  background: #fafafa;
+}
+
+.hero__dots {
+  position: absolute;
+  top: 8px;
+  right: -44px;
+  width: 80px;
+  height: 180px;
+  background-image: radial-gradient(#d9d9dd 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+@media (max-width: 900px) {
+  .hero__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .hero__grid {
+    width: 100%;
+  }
+
+  .hero__media {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+
+  .hero__backdrop,
+  .hero__dots {
+    right: 0;
+  }
+}
