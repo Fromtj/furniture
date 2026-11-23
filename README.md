@@ -32,6 +32,8 @@ landing-page/
 ├── index.html                    # page shell, links all CSS, loads app.js
 ├── assets/
 │   └── images/                   # put photos here
+├── docs/
+│   └── task-distribution/        # 3 images: who builds which section (not used by the site)
 ├── src/
 │   ├── app.js                    # imports everything, renders the page
 │   ├── components/
@@ -43,8 +45,10 @@ landing-page/
 │   │   ├── features/             # features.js + features.css
 │   │   ├── products/             # products.js + products.css
 │   │   └── try-now/              # try-now.js + try-now.css
-│   └── styles/
-│       └── global.css            # variables, reset, shared helpers
+│   ├── styles/
+│   │   └── global.css            # variables, reset, shared helpers
+│   └── utils/
+│       └── dom.js                # shared DOM helper functions
 ├── TEAM_GUIDE.md
 ├── README.md
 └── .gitignore
@@ -66,7 +70,8 @@ python -m http.server 5500
 
 ## How the module system works
 
-- Each section lives in its own folder and exports one function with a **named export**, e.g. `export function HeroSection()`, which returns the section's HTML as a template literal.
-- `src/app.js` imports every section (and the Header / Footer), keeps them in an array in Figma order, joins their HTML strings and writes the result into `<div id="app">` in `index.html`.
+- Each section lives in its own folder and exports one function with a **named export**, e.g. `export function HeroSection()`, which builds and returns a real DOM element using the native DOM API (`createElement`, `classList`, `textContent`, `append`).
+- `src/app.js` imports every section (and the Header / Footer), keeps them in an array in Figma order, appends the returned elements to a `<main>` element and mounts Header, main and Footer into `<div id="app">` in `index.html`. No HTML strings or `innerHTML` are used.
+- `src/utils/dom.js` holds small shared helpers that wrap the native DOM methods.
 - After rendering, `app.js` dispatches a `page:rendered` event. Modules that need JavaScript behaviour (such as the header menu) listen for it, so developers never need to edit `app.js`.
 - CSS is plain files linked from `index.html`. Class names are prefixed per section (`.hero__*`, `.about__*`, `.features__*`, `.products__*`, `.trynow__*`) so styles cannot collide.

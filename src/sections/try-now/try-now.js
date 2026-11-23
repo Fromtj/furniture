@@ -1,3 +1,6 @@
 export function TryNowSection() {
-  return `<section class="trynow" id="try-now"></section>`;
+  const section = document.createElement('section');
+  section.classList.add('trynow');
+  section.setAttribute('id', 'try-now');
+  return section;
 }

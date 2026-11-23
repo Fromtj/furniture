@@ -1,3 +1,6 @@
 export function FeaturesSection() {
-  return `<section class="features" id="features"></section>`;
+  const section = document.createElement('section');
+  section.classList.add('features');
+  section.setAttribute('id', 'features');
+  return section;
 }

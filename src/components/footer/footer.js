@@ -1,41 +1,79 @@
+import { createElement } from '../../utils/dom.js';
+
+const serviceLinks = [
+  { text: 'Collection', href: '#features' },
+  { text: 'How its work', href: '#features' },
+  { text: 'Estimats', href: '#features' },
+];
+
+const companyLinks = [
+  { text: 'Terms of use', href: '#top' },
+  { text: 'Privacy policy', href: '#top' },
+  { text: 'Careers', href: '#top' },
+];
+
+const contactLinks = [
+  { text: 'Furniutr2@furniture.com', href: 'mailto:Furniutr2@furniture.com' },
+  { text: '(888) 315-500', href: 'tel:+1888315500' },
+  { text: 'St. Village, New York' },
+];
+
+function createTitle(text) {
+  return createElement('h3', { classes: ['site-footer__title'], text });
+}
+
+function createLink({ text, href }) {
+  if (!href) {
+    return createElement('address', {
+      classes: ['site-footer__link', 'site-footer__address'],
+      text,
+    });
+  }
+  return createElement('a', {
+    classes: ['site-footer__link'],
+    text,
+    attrs: { href },
+  });
+}
+
+function createColumn(title, links) {
+  const items = links.map((link) => createElement('li', { children: [createLink(link)] }));
+  const list = createElement('ul', { classes: ['site-footer__list'], children: items });
+
+  return createElement('div', {
+    classes: ['site-footer__col'],
+    children: [createTitle(title), list],
+  });
+}
+
+function createDiscountColumn() {
+  return createElement('div', {
+    classes: ['site-footer__col'],
+    children: [
+      createTitle("Get's your discount"),
+      createLink({ text: 'Check now !', href: '#top' }),
+    ],
+  });
+}
+
 export function Footer() {
-  return `
-    <footer class="site-footer">
-      <div class="site-footer__inner container">
-        <div class="site-footer__grid">
-          <div class="site-footer__col">
-            <h3 class="site-footer__title">Get's your discount</h3>
-            <a class="site-footer__link" href="#top">Check now !</a>
-          </div>
+  const grid = createElement('div', {
+    classes: ['site-footer__grid'],
+    children: [
+      createDiscountColumn(),
+      createColumn('Our services', serviceLinks),
+      createColumn('Company', companyLinks),
+      createColumn('Contact', contactLinks),
+    ],
+  });
 
-          <div class="site-footer__col">
-            <h3 class="site-footer__title">Our services</h3>
-            <ul class="site-footer__list">
-              <li><a class="site-footer__link" href="#features">Collection</a></li>
-              <li><a class="site-footer__link" href="#features">How its work</a></li>
-              <li><a class="site-footer__link" href="#features">Estimats</a></li>
-            </ul>
-          </div>
+  const inner = createElement('div', {
+    classes: ['site-footer__inner', 'container'],
+    children: [grid],
+  });
 
-          <div class="site-footer__col">
-            <h3 class="site-footer__title">Company</h3>
-            <ul class="site-footer__list">
-              <li><a class="site-footer__link" href="#top">Terms of use</a></li>
-              <li><a class="site-footer__link" href="#top">Privacy policy</a></li>
-              <li><a class="site-footer__link" href="#top">Careers</a></li>
-            </ul>
-          </div>
-
-          <div class="site-footer__col">
-            <h3 class="site-footer__title">Contact</h3>
-            <ul class="site-footer__list">
-              <li><a class="site-footer__link" href="mailto:Furniutr2@furniture.com">Furniutr2@furniture.com</a></li>
-              <li><a class="site-footer__link" href="tel:+1888315500">(888) 315-500</a></li>
-              <li><address class="site-footer__link site-footer__address">St. Village, New York</address></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </footer>
-  `;
+  return createElement('footer', {
+    classes: ['site-footer'],
+    children: [inner],
+  });
 }

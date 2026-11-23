@@ -20,6 +20,8 @@ Read this once before you write any code. It tells you what you own, what you mu
 
 Folders are named after the **sections**, not the people. Who owns a section is documented only here.
 
+The same split as pictures (one image per developer, highlighted on the Figma design) is in `docs/task-distribution/`. These images are for sharing in the team chat and are not used by the website.
+
 ---
 
 ## 2. Which files you are allowed to modify
@@ -39,7 +41,7 @@ If you think you need to change a file you don't own, **ask the owner / Team Lea
 ## 3. How to implement your section
 
 1. Open your section's two files, e.g. `src/sections/features/features.js` and `features.css`.
-2. Build the markup inside the exported function (it returns a template literal).
+2. Build the markup inside the exported function with the native DOM API (`document.createElement`, `classList.add`, `textContent`, `append`). The function returns a real DOM element. No `innerHTML`, no HTML strings, no `style` attributes.
 3. Style it in the CSS file next to it using **your class prefix** (e.g. `.features__card`).
 4. Replace the grey `u-media` placeholder with a real `<img>` once the asset is in `assets/images/`.
 5. Refresh the page (Live Server) and compare with Figma.
@@ -50,17 +52,31 @@ If you think you need to change a file you don't own, **ask the owner / Team Lea
 
 ## 4. How to export a section
 
-Every section file uses a **named export** of one function that returns an HTML string:
+Every section file uses a **named export** of one function that returns a DOM element (the `<section>`):
 
 ```js
+import { createElement } from '../../utils/dom.js';
+
 export function FeaturesSection() {
-  return `
-    <section class="features" id="features">
-      <div class="features__inner container"></div>
-    </section>
-  `;
+  const title = createElement('h2', {
+    classes: ['features__title'],
+    text: 'Section title',
+  });
+
+  const inner = createElement('div', {
+    classes: ['features__inner', 'container'],
+    children: [title],
+  });
+
+  return createElement('section', {
+    classes: ['features'],
+    attrs: { id: 'features' },
+    children: [inner],
+  });
 }
 ```
+
+`createElement(tag, { classes, text, attrs, children })` in `src/utils/dom.js` is a thin wrapper over `document.createElement`, `classList.add`, `textContent`, `setAttribute` and `append`. You can also call those native methods directly, as the starter files do. For SVG icons use `createSvgElement`, and for purely decorative spans use `createDecoration`.
 
 Rules:
 
@@ -68,6 +84,8 @@ Rules:
 - Use named exports only (no `export default`).
 - Need more than one block in your section? Create small helper functions inside your file — do not export extra things that `app.js` doesn't use.
 - Keep the `id` and the outer class of the starter `<section>` (e.g. `id="features"`, `class="features"`): the header, footer and buttons link to those ids.
+- Never build markup with `innerHTML`, template literals containing HTML, or functions that return HTML strings.
+- Style only through classes defined in CSS files: no `style` attributes and no `element.style`.
 - Need JavaScript behaviour (click handlers, sliders)? See "page:rendered" in section 6.
 
 ---
@@ -107,7 +125,7 @@ Don't:
 
 ## 6. How `app.js` imports and renders everything
 
-`src/app.js` imports `Header`, `Footer` and the five section functions from their fixed paths, puts the sections in an array **in Figma order**, joins their HTML into `<main>`, and writes it into `<div id="app">`:
+`src/app.js` imports `Header`, `Footer` and the five section functions from their fixed paths, puts the sections in an array **in Figma order**, calls each one to get its DOM element, appends them to a `<main>` element, and places Header, `<main>` and Footer into `<div id="app">` with `replaceChildren`:
 
 ```
 Header → HeroSection → AboutSection → FeaturesSection → ProductsSection → TryNowSection → Footer
@@ -129,7 +147,7 @@ function initMySection() {
 document.addEventListener('page:rendered', initMySection);
 ```
 
-Do **not** use `document.querySelector` at the top level of your module — the HTML doesn't exist yet at that moment.
+Do **not** use `document.querySelector` at the top level of your module — the page doesn't exist in the document yet at that moment. If you only need elements you created yourself, keep references to them in your section function instead.
 
 **CSS loading:** each stylesheet is linked in `index.html`. Your CSS file is already linked. If you ever need an additional CSS file, ask the Team Lead to add the `<link>`.
 
@@ -180,6 +198,7 @@ The structure is built so two people never edit the same file. Keep it that way:
 | ------------------------------ | ------------------------------------------------ |
 | `index.html`                   | page shell + CSS `<link>` list                   |
 | `src/app.js`                   | imports and page order                           |
+| `src/utils/dom.js`             | shared DOM helpers used by every section         |
 | `src/styles/global.css`        | design tokens, reset, shared helpers             |
 | `src/components/header/*`      | shared Header                                    |
 | `src/components/footer/*`      | shared Footer                                    |

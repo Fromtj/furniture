@@ -21,13 +21,11 @@ function render() {
     throw new Error('Missing <div id="app"></div> in index.html');
   }
 
-  root.innerHTML = `
-    ${Header()}
-    <main id="main">
-      ${sections.map((section) => section()).join('\n')}
-    </main>
-    ${Footer()}
-  `;
+  const main = document.createElement('main');
+  main.setAttribute('id', 'main');
+  main.append(...sections.map((createSection) => createSection()));
+
+  root.replaceChildren(Header(), main, Footer());
 
   document.dispatchEvent(new CustomEvent('page:rendered'));
 }

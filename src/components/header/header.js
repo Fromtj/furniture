@@ -1,44 +1,109 @@
+import { createElement, createSvgElement } from '../../utils/dom.js';
+
+const navItems = [
+  { text: 'Home', href: '#hero' },
+  { text: 'About', href: '#about' },
+  { text: 'Collection', href: '#features' },
+  { text: 'Shop', href: '#products' },
+];
+
+function createIcon(size, shapes) {
+  return createSvgElement(
+    'svg',
+    {
+      width: size,
+      height: size,
+      viewBox: '0 0 24 24',
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': '2',
+      'stroke-linecap': 'round',
+      'stroke-linejoin': 'round',
+      'aria-hidden': 'true',
+    },
+    shapes
+  );
+}
+
+function createIconButton(label, icon) {
+  return createElement('button', {
+    classes: ['site-header__icon-btn'],
+    attrs: { type: 'button', 'aria-label': label },
+    children: [icon],
+  });
+}
+
+function createNav() {
+  const items = navItems.map(({ text, href }) => {
+    const link = createElement('a', {
+      classes: ['site-header__link'],
+      text,
+      attrs: { href },
+    });
+    return createElement('li', { children: [link] });
+  });
+
+  const list = createElement('ul', { classes: ['site-header__list'], children: items });
+
+  return createElement('nav', {
+    classes: ['site-header__nav'],
+    attrs: { id: 'site-nav', 'aria-label': 'Main navigation' },
+    children: [list],
+  });
+}
+
+function createActions() {
+  const cartIcon = createIcon('18', [
+    createSvgElement('path', { d: 'M5 8h14l-1 12H6L5 8z' }),
+    createSvgElement('path', { d: 'M9 8V6a3 3 0 0 1 6 0v2' }),
+  ]);
+  const searchIcon = createIcon('20', [
+    createSvgElement('circle', { cx: '11', cy: '11', r: '7' }),
+    createSvgElement('path', { d: 'm20 20-3.5-3.5' }),
+  ]);
+
+  const toggle = createElement('button', {
+    classes: ['site-header__toggle'],
+    attrs: {
+      type: 'button',
+      'aria-label': 'Toggle menu',
+      'aria-expanded': 'false',
+      'aria-controls': 'site-nav',
+    },
+    children: [
+      document.createElement('span'),
+      document.createElement('span'),
+      document.createElement('span'),
+    ],
+  });
+
+  return createElement('div', {
+    classes: ['site-header__actions'],
+    children: [
+      createIconButton('Cart', cartIcon),
+      createIconButton('Search', searchIcon),
+      toggle,
+    ],
+  });
+}
+
 export function Header() {
-  return `
-    <header class="site-header" id="top">
-      <div class="site-header__inner container">
-        <a class="site-header__logo" href="#hero" aria-label="Furniutr. — home">Furniutr.</a>
+  const logo = createElement('a', {
+    classes: ['site-header__logo'],
+    text: 'Furniutr.',
+    attrs: { href: '#hero', 'aria-label': 'Furniutr. — home' },
+  });
 
-        <nav class="site-header__nav" id="site-nav" aria-label="Main navigation">
-          <ul class="site-header__list">
-            <li><a class="site-header__link" href="#hero">Home</a></li>
-            <li><a class="site-header__link" href="#about">About</a></li>
-            <li><a class="site-header__link" href="#features">Collection</a></li>
-            <li><a class="site-header__link" href="#products">Shop</a></li>
-          </ul>
-        </nav>
+  const inner = createElement('div', {
+    classes: ['site-header__inner', 'container'],
+    children: [logo, createNav(), createActions()],
+  });
 
-        <div class="site-header__actions">
-          <button class="site-header__icon-btn" type="button" aria-label="Cart">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 8h14l-1 12H6L5 8z" />
-              <path d="M9 8V6a3 3 0 0 1 6 0v2" />
-            </svg>
-          </button>
-          <button class="site-header__icon-btn" type="button" aria-label="Search">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m20 20-3.5-3.5" />
-            </svg>
-          </button>
-          <button
-            class="site-header__toggle"
-            type="button"
-            aria-label="Toggle menu"
-            aria-expanded="false"
-            aria-controls="site-nav"
-          >
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-      </div>
-    </header>
-  `;
+  return createElement('header', {
+    classes: ['site-header'],
+    attrs: { id: 'top' },
+    children: [inner],
+  });
 }
 
 function initHeader() {
